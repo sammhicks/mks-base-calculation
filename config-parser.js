@@ -69,4 +69,4 @@
 		sub_values(1),
 		Parsimmon.string("}"),    eol
 	).map((results) => results[4]).desc("Part");
-}(window.config_parser = window.config_parser || {}))
+}(window.config_parser = window.config_parser || {}));
