@@ -5,10 +5,14 @@
 		<title>MKS Base Calculation</title>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular.min.js"></script>
+		<script src="parsimmon.js"></script>
+		<script src="config-parser.js"></script>
+		<script src="config-crawler.js"></script>
 		<script src="scripts.js"></script>
 	</head>
 	<body ng-app="mks-calculation" ng-controller="mks-calculation-controller">
 		<p>{{version}}</p>
 		<p>{{ksp_version}}</p>
+		<dir ng-repeat="part in parts">{{part}}</dir>
 	</body>
 </html>

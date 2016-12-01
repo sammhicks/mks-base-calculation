@@ -1,11 +1,14 @@
-function load_version(http){
-	return http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version");
-}
-
-var app = angular.module('mks-calculation', []);
-app.controller('mks-calculation-controller', function($scope, $http) {
-	load_version($http).then((response) => {
-		$scope.version = response.data.VERSION;
-		$scope.ksp_version = response.data.KSP_VERSION;
+angular.module("mks-calculation", []).controller("mks-calculation-controller", ["$scope", "$http", function($scope, $http) {
+	config_crawler.set_http($http);
+	
+	config_crawler.get_version().then((response) => {
+		$scope.version = response.VERSION; 
+		$scope.ksp_version = response.KSP_VERSION;
+		$scope.$apply();
 	});
-});
+	
+	config_crawler.load_configs().then((parts) => {
+		$scope.parts = parts;
+		$scope.$apply();
+	});
+}]);
