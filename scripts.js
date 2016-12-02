@@ -33,6 +33,11 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 		return false;
 	}
 	
+	function map_parts()
+	{
+		$scope.parts = $localStorage.parts.map((part) => new MKSPart(part));
+	}
+	
 	$http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then((response) => {
 		var mks_version = response.data.VERSION;
 		
@@ -46,7 +51,7 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 				$localStorage.mks_version = mks_version;
 				$localStorage.parts = parts;
 				
-				$scope.parts = parts;
+				map_parts();
 				$scope.$apply();
 				
 				console.log("Part configs loaded");
@@ -58,7 +63,7 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 		{
 			console.log("Using cached part configs");
 			
-			$scope.parts = $localStorage.parts;
+			map_parts();
 		}
 	});
 });
