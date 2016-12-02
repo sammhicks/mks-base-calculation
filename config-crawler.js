@@ -13,8 +13,11 @@
 	var get_file_data = (file_info) => new Promise(function(resolve, reject) {
 		if (file_info.type === "file")
 		{
-			http_handler.get(file_info.download_url).catch(reject).then((file_response) => {
+			http_handler.get(file_info.download_url).then((file_response) => {
 				resolve(file_response.data)
+			}, () => {
+				console.log("Could not parse \"" + + "\"");
+				reject.apply(this, arguments);
 			});
 		}
 		else
@@ -68,18 +71,4 @@
 	}
 	
 	config_crawler.load_configs = () => load_config_dir({path: MKS_path + "Parts"});
-	
-	config_crawler.get_version = () => new Promise(function(resolve, reject) {
-		get_contents(MKS_path + "MKS.version").then((response) => {
-			get_file_data(response.data).then((response) => {
-				resolve(response);
-			}, reject);
-		}, reject);
-	});
-	
-	/*load_configs().then((parts) => {
-		console.log(parts);
-		$scope.parts = parts;
-		$scope.$apply();
-	});*/
 }(window.config_crawler = window.config_crawler || {}));
