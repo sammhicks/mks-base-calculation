@@ -1,9 +1,17 @@
-function PowerCoupler(part) {
-	this.range = part.PowerCouplingRange;
+function PowerCoupler(module) {
+	this.range = module.PowerCouplingRange;
 }
 
-function PowerDistributor(part) {
-	this.range = part.PowerDistributionRange;
+function PowerDistributor(module) {
+	this.range = module.PowerDistributionRange;
+}
+
+function Habitation(module) {
+	this.name = module.ConverterName;
+	this.baseKerbalMonths = module.BaseKerbalMonths;
+	this.crewCapacity = module.CrewCapacity;
+	this.baseHabMultiplier = module.BaseHabMultiplier;
+	this.inputResource = module.INPUT_RESOURCE;
 }
 
 function MKSPart(part) {
@@ -27,6 +35,12 @@ function MKSPart(part) {
 			case "ModuleResourceConverter_USI":
 				this.converters[module.ConverterName] = module;
 				this.hasConverters = true;
+				break;
+			case "ModuleHabitation":
+				if (this.habitation === undefined) {
+					this.habitation = {};
+				}
+				this.habitation[module.ConverterName] = new Habitation(module);
 				break;
 		}
 	}
