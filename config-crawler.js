@@ -19,9 +19,12 @@ function configCrawler(httpHandler) {
 		var parse_result = configParser.config.parse(response);
 		
 		if (parse_result.status) {
-			return [parse_result.value];
+			return Promise.resolve([parse_result.value]);
 		} else {
-			return [];
+			var message = "Could not parse \"" + fileInfo.name + "\"";
+			
+			console.error(message, parse_result);
+			return Promise.reject(message);
 		}
 	});
 	
