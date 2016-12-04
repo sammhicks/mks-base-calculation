@@ -24,7 +24,20 @@
 					<li ng-repeat="resource in part.resources">{{resource.name}}</li>
 				</ul>
 			</div>
-			<div class="converters" ng-show="part.hasConverter">
+			<div class="habitation" ng-show="part.habitation">
+				<h4>Habitation</h4>
+				<ul>
+					<li ng-repeat="(habitationName, habitation) in part.habitation">
+						{{habitationName}}
+						<ul>
+							<li>Base Kerbal Months - {{habitation.baseKerbalMonths}}</li>
+							<li>Crew Capacity - {{habitation.crewCapacity}}</li>
+							<li>Base Hab Multiplier  - {{habitation.baseHabMultiplier}}</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="converters" ng-show="part.hasConverters">
 				<h4>Converters</h4>
 				<select ng-options="converterName for (converterName, converter) in part.converters track by converterName" ng-model="part.selectedConverter"></select>
 				<p>{{part.selectedConverter}}</p>
