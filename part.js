@@ -28,7 +28,7 @@ function MKSPart(part) {
 	
 	if (this.has_resources)
 	{
-		for (const resource of part.RESOURCE){
+		for (const resource of part.RESOURCE) {
 			this.resources[resource.name] = resource;
 		}
 	}
@@ -38,8 +38,7 @@ function MKSPart(part) {
 	this.hasConverter = part.MODULE.some(isConverter);
 	this.converters = {};
 	
-	if (this.hasConverter)
-	{
+	if (this.hasConverter) {
 		for (const module of part.MODULE) {
 			if (isConverter(module)) {
 				this.converters[module.ConverterName] = module;

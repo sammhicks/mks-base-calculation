@@ -48,7 +48,7 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 		$scope.parts = $localStorage.parts.filter(valid_part).map((part) => new MKSPart(part));
 	}
 	
-	$http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then((response) => {
+	$http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then(function(response) {
 		var mksVersion = response.data.VERSION;
 		
 		$scope.mksVersion = mksVersion;
@@ -57,16 +57,15 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 		{
 			console.log("Importing part configs...");
 			
-			new configCrawler($http).loadConfigs().then((parts) => {
+			new configCrawler($http).loadConfigs().then(function(parts) {
 				$localStorage.mksVersion = mksVersion;
 				$localStorage.parts = parts;
 				
 				mapParts();
-				$scope.$apply();
 				
 				console.log("Part configs loaded");
-			}, () => {
-				console.error("Could not import part configs");
+			}, function(response) {
+				console.error("Could not import part configs - \"" + response + "\"");
 			});
 		}
 		else
@@ -75,5 +74,7 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 			
 			mapParts();
 		}
+	}, function() {
+		console.error("Could not load version");
 	});
 });

@@ -1,70 +1,42 @@
 function configCrawler(httpHandler) {
-	var self = this;
-	
 	var mksPath = "FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/";
 	
-	this.httpHandler = httpHandler;
+	var getContents = (path) => httpHandler.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
 	
-	configCrawler.set_http = function(handler)
-	{
-		httpHandler = handler;
+	function getFileData(fileInfo) {
+		if (fileInfo.type === "file") {
+			return httpHandler.get(fileInfo.download_url).then((file_response) => file_response.data
+			, function(e) {
+				console.log("Could not parse \"" + fileInfo.name + "\"");
+				return e;
+			});
+		} else {
+			return Promise.reject("Cannot download file \"" + fileInfo.download_url + "\"");
+		}
 	}
 	
-	var getContents = (path) => self.httpHandler.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
-	
-	var getFileData = (fileInfo) => new Promise(function(resolve, reject) {
-		if (fileInfo.type === "file")
-		{
-			self.httpHandler.get(fileInfo.download_url).then((file_response) => {
-				resolve(file_response.data)
-			}, () => {
-				console.log("Could not parse \"" + + "\"");
-				reject.apply(this, arguments);
-			});
-		}
-		else
-		{
-			reject("Cannot download file \"" + fileInfo.download_url + "\"");
+	var loadConfigFile = (fileInfo) => getFileData(fileInfo).then(function(response) {
+		var parse_result = config_parser.config.parse(response);
+		
+		if (parse_result.status) {
+			return [parse_result.value];
+		} else {
+			return [];
 		}
 	});
 	
-	var loadConfigFile = (fileInfo) => new Promise(function(resolve, reject) {
-		getFileData(fileInfo).then((response) => {
-			var parse_result = config_parser.config.parse(response);
-			
-			if (parse_result.status)
-			{
-				resolve([parse_result.value]);
-			}
-			else
-			{
-				resolve([]);
-			}
-		}, reject);
-	});
+	var union = (a, b) => a.concat(b);
 	
-	var loadConfigDir = (dir_info) => new Promise(function(resolve, reject) {
-		getContents(dir_info.path).then((response) => {
-			Promise.all(response.data.map(loadConfig)).then((responses) => {
-				resolve(responses.reduce((a, b) => a.concat(b)));
-			}, reject);
-		}, reject);
-	});
+	var arrayUnion = (array) => array.reduce(union);
 	
-	function loadConfig(file)
-	{
-		switch (file.type)
-		{
-			case "file": {
-				if (file.name.endsWith(".cfg"))
-				{
-					return loadConfigFile(file);
-				}
-				else
-				{
-					return Promise.resolve([]);
-				}
-			}
+	var loadConfigDir = (dir_info) => getContents(dir_info.path).then(loadConfigs).then(arrayUnion);
+	
+	var loadConfigs = (files) => Promise.all(files.data.map(loadConfig));
+	
+	function loadConfig(file) {
+		switch (file.type) {
+			case "file":
+				return (file.name.endsWith(".cfg")) ? loadConfigFile(file) : Promise.resolve([]);
 			case "dir":
 				return loadConfigDir(file);
 			default:
