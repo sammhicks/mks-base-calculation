@@ -17,6 +17,7 @@
 	<body ng-app="mks-calculation" ng-controller="mks-calculation-controller">
 		<p>{{mksVersion}}</p>
 		<div class="part" ng-repeat="part in parts">
+			<hr/>
 			<h2 class="title">{{part.title}}</h2>
 			<div class="resource" ng-show="part.resources">
 				<h4>Resources</h4>
@@ -24,59 +25,40 @@
 					<li ng-repeat="(resourceName, resource) in part.resources">{{resource.name}} - {{resource.amount}} of {{resource.maxAmount}}</li>
 				</ul>
 			</div>
-			<div class="habitation" ng-show="part.habitation">
-				<h4>Habitation</h4>
-				<ul>
-					<li ng-repeat="(habitationName, habitation) in part.habitation">
-						{{habitationName}}
-						<ul>
-							<li>Base Kerbal Months - {{habitation.baseKerbalMonths}}</li>
-							<li>Crew Capacity - {{habitation.crewCapacity}}</li>
-							<li>Base Hab Multiplier  - {{habitation.baseHabMultiplier}}</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-			<div class="lifeSupportRecyclers" ng-show="part.lifeSupportRecyclers">
-				<h4>Life Support Recyclers</h4>
-				<select ng-options="recyclerName for (recyclerName, recycler) in part.lifeSupportRecyclers track by recyclerName" ng-model="part.selectedRecycler"></select>
-				<div>
-					{{recyclerName}}
-					<ul>
-						<li>Crew Capacity - {{part.selectedRecycler.crewCapacity}}</li>
-						<li>Efficiency - {{part.selectedRecycler.recyclePercent}}</li>
-						<li>
-							Inputs
-							<ul>
-								<li ng-repeat="input in part.selectedRecycler.inputs">{{input.name}} - {{input.ratio}}</li>
-							</ul
-						</li>
-					</ul>
-				</div>
-			</div>
 			<div class="converters" ng-show="part.converters">
 				<h4>Converters</h4>
-				<select ng-options="converterName for (converterName, converter) in part.converters track by converterName" ng-model="part.selectedConverter"></select>
-				<div>
+				<select ng-options="converterName for (converterName, converter) in part.converters track by converter.name" ng-model="part.selectedConverter"></select>
+				<div ng-show="part.selectedConverter.inputs">
 					Inputs
 					<ul>
 						<li ng-repeat="input in part.selectedConverter.inputs">{{input.name}} - {{input.ratio}}</li>
 					</ul>
+				</div>
+				<div ng-show="part.selectedConverter.outputs">
 					Outputs
 					<ul>
 						<li ng-repeat="output in part.selectedConverter.outputs">{{output.name}} - {{output.ratio}}</li>
 					</ul>
+				</div>
+				<div ng-show="part.selectedConverter.required">
 					Required
 					<ul>
 						<li ng-repeat="required in part.selectedConverter.required">{{required.name}} - {{required.ratio}}</li>
 					</ul>
 				</div>
-			</div>
-			<div>
-				<h4>Other Modules</h4>
 				<ul>
-					<li ng-show="part.powerCoupler !== undefined">Power Coupler<span ng-show="part.powerCoupler.range !== undefined">: Range - {{part.powerCoupler.range}}</span></li>
-					<li ng-show="part.powerDistributor !== undefined">Power Distributor<span ng-show="part.powerDistributor.range !== undefined">: Range - {{part.powerDistributor.range}}</span></li>
+					<li ng-hide="habitation.baseKerbalMonths === undefined">Base Kerbal Months - {{habitation.baseKerbalMonths}}</li>
+					<li ng-hide="habitation.crewCapacity === undefined">Crew Capacity - {{habitation.crewCapacity}}</li>
+					<li ng-hide="habitation.baseHabMultiplier === undefined">Base Hab Multiplier  - {{habitation.baseHabMultiplier}}</li>
+					<li ng-hide="habitation.crewCapacity === undefined">Crew Capacity - {{part.selectedRecycler.crewCapacity}}</li>
+					<li ng-hide="habitation.recyclePercent === undefined">Efficiency - {{part.selectedRecycler.recyclePercent}}</li>
+				</ul>
+			</div>
+			<div class="bays" ng-show="part.bays">
+				Bays
+				<ul>
+					<li ng-repeat="(bayName, bay) in part.bays">{{bay.name}} ({{bay.typeName}})</li>
+					
 				</ul>
 			</div>
 		</div>
