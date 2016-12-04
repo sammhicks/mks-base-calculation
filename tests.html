@@ -7,27 +7,27 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular.min.js"></script>
-		<script src="parsimmon.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js"></script>
-		<script src="config-parser.js"></script>
 		<script src="config-crawler.js"></script>
+		<script src="parsimmon.js"></script>
+		<script src="config-parser.js"></script>
 		<script src="part.js"></script>
 		<script src="scripts.js"></script>
 	</head>
 	<body ng-app="mks-calculation" ng-controller="mks-calculation-controller">
-		<p>{{mks_version}}</p>
+		<p>{{mksVersion}}</p>
 		<div class="part" ng-repeat="part in parts">
 			<h2 class="title">{{part.title}}</h2>
-			<div class="resource" ng-show="part.has_resources">
+			<div class="resource" ng-show="part.hasResources">
 				<h4>Resources</h4>
 				<ul>
 					<li ng-repeat="resource in part.resources">{{resource.name}}</li>
 				</ul>
 			</div>
-			<div class="converters" ng-show="part.has_converter">
+			<div class="converters" ng-show="part.hasConverter">
 				<h4>Converters</h4>
-				<select ng-options="converter_name for (converter_name, converter) in part.converters track by converter_name" ng-model="part.selected_converter"></select>
-				<p>{{part.selected_converter}}</p>
+				<select ng-options="converterName for (converterName, converter) in part.converters track by converterName" ng-model="part.selectedConverter"></select>
+				<p>{{part.selectedConverter}}</p>
 			</div>
 			<div>
 				<h4>Other Modules</h4>

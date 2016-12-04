@@ -1,7 +1,5 @@
-angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-controller", function($scope, $http, $localStorage, $sessionStorage) {
-	config_crawler.set_http($http);
-	
-	function version_older(a, b)
+angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-controller", function($scope, $http, $localStorage, $sessionStorage) {	
+	function versionOlder(a, b)
 	{
 		switch (Math.sign(a.MAJOR - b.MAJOR)) {
 			case -1:
@@ -33,49 +31,50 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 		return false;
 	}
 	
-	var has_module = (part, module_name) => part.MODULE !== undefined && part.MODULE.some((module) => module.name === module_name);
+	var hasModule = (part, moduleName) => part.MODULE !== undefined && part.MODULE.some((module) => module.name === moduleName);
 	
-	var has_any_module = (part, module_names) => module_names.some((module_name) => has_module(part, module_name));
+	var hasAnyModule = (part, moduleNames) => moduleNames.some((moduleName) => hasModule(part, moduleName));
 	
 	function valid_part(part)
 	{
-		return has_any_module(part, [
+		return hasAnyModule(part, [
 			"MKSModule",
 			"ModulePowerCoupler"
 		]);
 	}
 	
-	function map_parts()
+	function mapParts()
 	{
 		$scope.parts = $localStorage.parts.filter(valid_part).map((part) => new MKSPart(part));
 	}
 	
-	$http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then((response) => {
-		var mks_version = response.data.VERSION;
+	$http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then(function(response) {
+		var mksVersion = response.data.VERSION;
 		
-		$scope.mks_version = mks_version;
+		$scope.mksVersion = mksVersion;
 		
-		if ($localStorage.mks_version === undefined || $localStorage.parts === undefined || version_older($localStorage.mks_version, mks_version))
+		if ($localStorage.mksVersion === undefined || $localStorage.parts === undefined || versionOlder($localStorage.mksVersion, mksVersion))
 		{
 			console.log("Importing part configs...");
 			
-			config_crawler.load_configs().then((parts) => {
-				$localStorage.mks_version = mks_version;
+			new configCrawler($http).loadConfigs().then(function(parts) {
+				$localStorage.mksVersion = mksVersion;
 				$localStorage.parts = parts;
 				
-				map_parts();
-				$scope.$apply();
+				mapParts();
 				
 				console.log("Part configs loaded");
-			}, () => {
-				console.error("Could not import part configs");
+			}, function(response) {
+				console.error("Could not import part configs - \"" + response + "\"");
 			});
 		}
 		else
 		{
 			console.log("Using cached part configs");
 			
-			map_parts();
+			mapParts();
 		}
+	}, function() {
+		console.error("Could not load version");
 	});
 });
