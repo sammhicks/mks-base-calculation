@@ -18,10 +18,10 @@
 		<p>{{mksVersion}}</p>
 		<div class="part" ng-repeat="part in parts">
 			<h2 class="title">{{part.title}}</h2>
-			<div class="resource" ng-show="part.hasResources">
+			<div class="resource" ng-show="part.resources">
 				<h4>Resources</h4>
 				<ul>
-					<li ng-repeat="resource in part.resources">{{resource.name}}</li>
+					<li ng-repeat="(resourceName, resource) in part.resources">{{resource.name}} - {{resource.amount}} of {{resource.maxAmount}}</li>
 				</ul>
 			</div>
 			<div class="habitation" ng-show="part.habitation">
@@ -37,10 +37,40 @@
 					</li>
 				</ul>
 			</div>
-			<div class="converters" ng-show="part.hasConverters">
+			<div class="lifeSupportRecyclers" ng-show="part.lifeSupportRecyclers">
+				<h4>Life Support Recyclers</h4>
+				<select ng-options="recyclerName for (recyclerName, recycler) in part.lifeSupportRecyclers track by recyclerName" ng-model="part.selectedRecycler"></select>
+				<div>
+					{{recyclerName}}
+					<ul>
+						<li>Crew Capacity - {{part.selectedRecycler.crewCapacity}}</li>
+						<li>Efficiency - {{part.selectedRecycler.recyclePercent}}</li>
+						<li>
+							Inputs
+							<ul>
+								<li ng-repeat="input in part.selectedRecycler.inputs">{{input.name}} - {{input.ratio}}</li>
+							</ul
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="converters" ng-show="part.converters">
 				<h4>Converters</h4>
 				<select ng-options="converterName for (converterName, converter) in part.converters track by converterName" ng-model="part.selectedConverter"></select>
-				<p>{{part.selectedConverter}}</p>
+				<div>
+					Inputs
+					<ul>
+						<li ng-repeat="input in part.selectedConverter.inputs">{{input.name}} - {{input.ratio}}</li>
+					</ul>
+					Outputs
+					<ul>
+						<li ng-repeat="output in part.selectedConverter.outputs">{{output.name}} - {{output.ratio}}</li>
+					</ul>
+					Required
+					<ul>
+						<li ng-repeat="required in part.selectedConverter.required">{{required.name}} - {{required.ratio}}</li>
+					</ul>
+				</div>
 			</div>
 			<div>
 				<h4>Other Modules</h4>
