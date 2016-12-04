@@ -1,19 +1,19 @@
-(function (config_crawler) {
-	var MKS_path = "FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/";
+(function (configCrawler) {
+	var mksPath = "FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/";
 	
-	var http_handler = undefined;
+	var httpHandler = undefined;
 	
-	config_crawler.set_http = function(handler)
+	configCrawler.set_http = function(handler)
 	{
-		http_handler = handler;
+		httpHandler = handler;
 	}
 	
-	var get_contents = (path) => http_handler.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
+	var getContents = (path) => httpHandler.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
 	
-	var get_file_data = (file_info) => new Promise(function(resolve, reject) {
-		if (file_info.type === "file")
+	var getFileData = (fileInfo) => new Promise(function(resolve, reject) {
+		if (fileInfo.type === "file")
 		{
-			http_handler.get(file_info.download_url).then((file_response) => {
+			httpHandler.get(fileInfo.download_url).then((file_response) => {
 				resolve(file_response.data)
 			}, () => {
 				console.log("Could not parse \"" + + "\"");
@@ -22,12 +22,12 @@
 		}
 		else
 		{
-			reject("Cannot download file \"" + file_info.download_url + "\"");
+			reject("Cannot download file \"" + fileInfo.download_url + "\"");
 		}
 	});
 	
-	var load_config_file = (file_info) => new Promise(function(resolve, reject) {
-		get_file_data(file_info).then((response) => {
+	var loadConfigFile = (fileInfo) => new Promise(function(resolve, reject) {
+		getFileData(fileInfo).then((response) => {
 			var parse_result = config_parser.config.parse(response);
 			
 			if (parse_result.status)
@@ -41,22 +41,22 @@
 		}, reject);
 	});
 	
-	var load_config_dir = (dir_info) => new Promise(function(resolve, reject) {
-		get_contents(dir_info.path).then((response) => {
-			Promise.all(response.data.map(load_config)).then((responses) => {
+	var loadConfigDir = (dir_info) => new Promise(function(resolve, reject) {
+		getContents(dir_info.path).then((response) => {
+			Promise.all(response.data.map(loadConfig)).then((responses) => {
 				resolve(responses.reduce((a, b) => a.concat(b)));
 			}, reject);
 		}, reject);
 	});
 	
-	function load_config(file)
+	function loadConfig(file)
 	{
 		switch (file.type)
 		{
 			case "file": {
 				if (file.name.endsWith(".cfg"))
 				{
-					return load_config_file(file);
+					return loadConfigFile(file);
 				}
 				else
 				{
@@ -64,11 +64,11 @@
 				}
 			}
 			case "dir":
-				return load_config_dir(file);
+				return loadConfigDir(file);
 			default:
 				return Promise.resolve([]);
 		}
 	}
 	
-	config_crawler.load_configs = () => load_config_dir({path: MKS_path + "Parts"});
-}(window.config_crawler = window.config_crawler || {}));
+	configCrawler.loadConfigs = () => loadConfigDir({path: mksPath + "Parts"});
+}(window.configCrawler = window.configCrawler || {}));

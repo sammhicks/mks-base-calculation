@@ -33,15 +33,15 @@ function MKSPart(part) {
 		}
 	}
 	
-	var is_converter = (module) => module.name === "ModuleResourceConverter_USI";
+	var isConverter = (module) => module.name === "ModuleResourceConverter_USI";
 	
-	this.has_converter = part.MODULE.some(is_converter);
+	this.hasConverter = part.MODULE.some(isConverter);
 	this.converters = {};
 	
-	if (this.has_converter)
+	if (this.hasConverter)
 	{
 		for (const module of part.MODULE) {
-			if (is_converter(module)) {
+			if (isConverter(module)) {
 				this.converters[module.ConverterName] = module;
 			}
 		}
