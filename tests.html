@@ -24,7 +24,7 @@
 					<li ng-repeat="resource in part.resources">{{resource.name}}</li>
 				</ul>
 			</div>
-			<div class="converters" ng-show="part.hasConverter">
+			<div class="converters" ng-show="part.hasConverters">
 				<h4>Converters</h4>
 				<select ng-options="converterName for (converterName, converter) in part.converters track by converterName" ng-model="part.selectedConverter"></select>
 				<p>{{part.selectedConverter}}</p>
