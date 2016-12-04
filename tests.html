@@ -4,9 +4,11 @@
 		<meta charset="UTF-8"/>
 		<title>MKS Base Calculation</title>
 		
+		<link rel="stylesheet" type="text/css" href="style.css">
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular.min.js"></script>
 		<script src="parsimmon.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js"></script>
 		<script src="config-parser.js"></script>
 		<script src="config-crawler.js"></script>
 		<script src="part.js"></script>
@@ -14,6 +16,26 @@
 	</head>
 	<body ng-app="mks-calculation" ng-controller="mks-calculation-controller">
 		<p>{{mks_version}}</p>
-		<dir ng-repeat="part in parts">{{part}}</dir>
+		<div class="part" ng-repeat="part in parts">
+			<h2 class="title">{{part.title}}</h2>
+			<div class="resource" ng-show="part.has_resources">
+				<h4>Resources</h4>
+				<ul>
+					<li ng-repeat="resource in part.resources">{{resource.name}}</li>
+				</ul>
+			</div>
+			<div class="converters" ng-show="part.has_converter">
+				<h4>Converters</h4>
+				<select ng-options="converter_name for (converter_name, converter) in part.converters track by converter_name" ng-model="part.selected_converter"></select>
+				<p>{{part.selected_converter}}</p>
+			</div>
+			<div>
+				<h4>Other Modules</h4>
+				<ul>
+					<li ng-show="part.powerCoupler !== undefined">Power Coupler<span ng-show="part.powerCoupler.range !== undefined">: Range - {{part.powerCoupler.range}}</span></li>
+					<li ng-show="part.powerDistributor !== undefined">Power Distributor<span ng-show="part.powerDistributor.range !== undefined">: Range - {{part.powerDistributor.range}}</span></li>
+				</ul>
+			</div>
+		</div>
 	</body>
 </html>

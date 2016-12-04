@@ -33,9 +33,21 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 		return false;
 	}
 	
+	var has_module = (part, module_name) => part.MODULE !== undefined && part.MODULE.some((module) => module.name === module_name);
+	
+	var has_any_module = (part, module_names) => module_names.some((module_name) => has_module(part, module_name));
+	
+	function valid_part(part)
+	{
+		return has_any_module(part, [
+			"MKSModule",
+			"ModulePowerCoupler"
+		]);
+	}
+	
 	function map_parts()
 	{
-		$scope.parts = $localStorage.parts.map((part) => new MKSPart(part));
+		$scope.parts = $localStorage.parts.filter(valid_part).map((part) => new MKSPart(part));
 	}
 	
 	$http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then((response) => {
