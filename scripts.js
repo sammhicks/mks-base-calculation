@@ -35,13 +35,10 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 	
 	var hasAnyModule = (part, moduleNames) => moduleNames.some((moduleName) => hasModule(part, moduleName));
 	
-	function valid_part(part)
-	{
-		return hasAnyModule(part, [
-			"MKSModule",
-			"ModulePowerCoupler"
-		]);
-	}
+	var valid_part =(part) => hasAnyModule(part, [
+		"MKSModule",
+		"ModuleResourceHarvester_USI"
+	]);
 	
 	function mapParts()
 	{

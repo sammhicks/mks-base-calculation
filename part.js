@@ -1,11 +1,3 @@
-function PowerCoupler(module) {
-	this.range = module.PowerCouplingRange;
-}
-
-function PowerDistributor(module) {
-	this.range = module.PowerDistributionRange;
-}
-
 function ResourceStore(resource) {
 	this.name = resource.name;
 	
@@ -40,56 +32,80 @@ function Converter(module) {
 	this.specialistEfficiencyFactor = module.SpecialistEfficiencyFactor;
 	this.experienceEffect = module.ExperienceEffect;
 	
-	this.inputs = module.INPUT_RESOURCE.map((resource) => new InputResource(resource));
-	this.outputs = module.OUTPUT_RESOURCE.map((resource) => new OutputResource(resource));
-	this.required = module.REQUIRED_RESOURCE.map((resource) => new RequiredResource(resource));
+	this.inputs = (module.INPUT_RESOURCE || []).map((resource) => new InputResource(resource));
+	this.outputs = (module.OUTPUT_RESOURCE || []).map((resource) => new OutputResource(resource));
+	this.required = (module.REQUIRED_RESOURCE || []).map((resource) => new RequiredResource(resource));
+}
+
+function LifeSupportExtender(module) {
+	Converter.call(this, module);
+	
+	this.partOnly = module.PartOnly;
+	this.restrictedClass = module.restrictedClass;
+	this.timeMultiplier = module.TimeMultiplier;
 }
 
 function LifeSupportRecycler(module) {
-	this.name = module.ConverterName;
+	Converter.call(this, module);
 	
 	this.crewCapacity = module.CrewCapacity;
 	
 	this.recyclePercent = module.RecyclePercent;
-	
-	this.inputs = module.INPUT_RESOURCE.map((resource) => new InputResource(resource));
 }
 
 function Habitation(module) {
-	this.name = module.ConverterName;
+	Converter.call(this, module);
+	
 	this.baseKerbalMonths = module.BaseKerbalMonths;
 	this.crewCapacity = module.CrewCapacity;
 	this.baseHabMultiplier = module.BaseHabMultiplier;
 	this.inputResource = module.INPUT_RESOURCE;
 }
 
+function Bay(module) {
+	this.name = module.bayName;
+	this.typeName = module.typeName;
+}
+
 function MKSPart(part) {
+	var self = this;
+	
 	this.name = part.name;
 	this.title = part.title;
 	
 	this.eTag = part.eTag;
 	this.eMultiplier = part.eMultiplier;
 	
+	function addConverter(name, converter) {
+		self.converters = self.converters || {};
+		self.converters[name] = converter;
+		
+		if (self.selectedConverter === undefined) {
+			self.selectedConverter = converter;
+		}
+	}
+	
+	function addBay(name, bay) {
+		self.bays = self.bays || {};
+		self.bays[name] = bay;
+	}
+	
 	for (const module of part.MODULE) {
 		switch (module.name) {
-			case "ModulePowerCoupler":
-				this.powerCoupler = new PowerCoupler(module);
-				break;
-			case "ModulePowerDistributor":
-				this.powerDistributor = new PowerDistributor(module);
-				break;
 			case "ModuleResourceConverter_USI":
-				this.converters = this.converters || {};
-				this.converters[module.ConverterName] = new Converter(module);
+				addConverter(module.ConverterName, new Converter(module));
+				break;
+			case "ModuleLifeSupportExtender":
+				addConverter(module.ConverterName, new LifeSupportExtender(module));
 				break;
 			case "ModuleLifeSupportRecycler":
-				this.lifeSupportRecyclers = this.lifeSupportRecyclers || {};
-				this.lifeSupportRecyclers[module.ConverterName] = new LifeSupportRecycler(module);
+				addConverter(module.ConverterName, new LifeSupportRecycler(module));
 				break;
 			case "ModuleHabitation":
-				this.habitation = this.habitation || {};
-				this.habitation[module.ConverterName] = new Habitation(module);
+				addConverter(module.ConverterName, new Habitation(module));
 				break;
+			case "ModuleSwappableConverter":
+				addBay(module.bayName, new Bay(module));
 		}
 	}
 	
