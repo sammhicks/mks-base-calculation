@@ -1,6 +1,4 @@
-angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-controller", function($scope, $http, $localStorage, $sessionStorage) {
-	configCrawler.set_http($http);
-	
+angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-controller", function($scope, $http, $localStorage, $sessionStorage) {	
 	function versionOlder(a, b)
 	{
 		switch (Math.sign(a.MAJOR - b.MAJOR)) {
@@ -59,7 +57,7 @@ angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-con
 		{
 			console.log("Importing part configs...");
 			
-			configCrawler.loadConfigs().then((parts) => {
+			new configCrawler($http).loadConfigs().then((parts) => {
 				$localStorage.mksVersion = mksVersion;
 				$localStorage.parts = parts;
 				

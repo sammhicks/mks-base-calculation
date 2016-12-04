@@ -1,19 +1,21 @@
-(function (configCrawler) {
+function configCrawler(httpHandler) {
+	var self = this;
+	
 	var mksPath = "FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/";
 	
-	var httpHandler = undefined;
+	this.httpHandler = httpHandler;
 	
 	configCrawler.set_http = function(handler)
 	{
 		httpHandler = handler;
 	}
 	
-	var getContents = (path) => httpHandler.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
+	var getContents = (path) => self.httpHandler.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
 	
 	var getFileData = (fileInfo) => new Promise(function(resolve, reject) {
 		if (fileInfo.type === "file")
 		{
-			httpHandler.get(fileInfo.download_url).then((file_response) => {
+			self.httpHandler.get(fileInfo.download_url).then((file_response) => {
 				resolve(file_response.data)
 			}, () => {
 				console.log("Could not parse \"" + + "\"");
@@ -70,5 +72,5 @@
 		}
 	}
 	
-	configCrawler.loadConfigs = () => loadConfigDir({path: mksPath + "Parts"});
-}(window.configCrawler = window.configCrawler || {}));
+	this.loadConfigs = () => loadConfigDir({path: mksPath + "Parts"});
+}
