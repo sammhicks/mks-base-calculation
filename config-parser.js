@@ -1,4 +1,4 @@
-(function (config_parser) {
+(function (configParser) {
 	var space_or_tab = Parsimmon.oneOf(" \t").many();
 	
 	var eol = Parsimmon.seq(
@@ -63,10 +63,10 @@
 		).map((results) => append_value(results[1].trim(), results[6]))
 	);
 	
-	config_parser.config = Parsimmon.seq(
+	configParser.config = Parsimmon.seq(
 		Parsimmon.string("PART"), eol,
 		Parsimmon.string("{"),    eol,
 		sub_values(1),
 		Parsimmon.string("}"),    eol
 	).map((results) => results[4]).desc("Part");
-}(window.config_parser = window.config_parser || {}));
+}(window.configParser = window.configParser || {}));

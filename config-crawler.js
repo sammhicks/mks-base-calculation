@@ -16,7 +16,7 @@ function configCrawler(httpHandler) {
 	}
 	
 	var loadConfigFile = (fileInfo) => getFileData(fileInfo).then(function(response) {
-		var parse_result = config_parser.config.parse(response);
+		var parse_result = configParser.config.parse(response);
 		
 		if (parse_result.status) {
 			return [parse_result.value];
