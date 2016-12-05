@@ -1,0 +1,26 @@
+body {
+	width: 100%;
+	
+	display: flex;
+	flex-flow: row wrap;
+	
+	justify-content: space-around;
+	align-items: stretch;
+}
+
+body>header, body>footer {
+	width: 100%;
+}
+
+body>aside {
+	border: 1px solid orange;
+	
+	flex-grow: 0;
+}
+
+body>main {
+	border: 1px solid purple;
+	
+	flex-grow: 1;
+}
+
