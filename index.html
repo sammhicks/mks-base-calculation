@@ -20,10 +20,10 @@
 		<header>
 			<h1>MKS Base Calculation</h1>
 		</header>
-		<section>
+		<section id="baseParts">
 			<aside>
 				<h2>Parts</h2>
-				<ul id="parts">
+				<ul class="parts">
 					<li ng-repeat="part in parts" dnd-draggable="part" dnd-effect-allowed="copy" dnd-type="partType">
 						{{part.title}}
 					</li>
@@ -31,9 +31,9 @@
 			</aside>
 			<main>
 				<h2>Base Parts</h2>
-				<ul id="baseParts" dnd-list="baseParts" dnd-allowed-types="[partType]" dnd-horizontal-list="true">
+				<ul dnd-list="baseParts" dnd-allowed-types="[partType]" dnd-horizontal-list="true">
 					<li class="dndPlaceholder">Drop part here</li>
-					<li class="basePart" ng-repeat="part in baseParts">
+					<li class="basePart" ng-repeat="part in baseParts" dnd-draggable="part" dnd-effect-allowed="moveCopy" dnd-type="partType" dnd-moved="baseParts.splice($index, 1)">
 						<header>{{part.title}}</header>
 						<section class="converters">
 							<header>Converters</header>

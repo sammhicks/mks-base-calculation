@@ -21,31 +21,6 @@ body > header, body > section> * > h2 {
 	text-align: center;
 }
 
-body > section {
-	display: flex;
-	flex-flow: row nowrap;
-	
-	align-items: stretch;
-}
-
-body > section > aside {
-	margin-right: 1em;
-	padding: 0 8px;
-	
-	border-right: 0.5em orange groove;
-	
-	flex-grow: 0;
-}
-
-body > section > main {
-	flex-grow: 1;
-	
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: flex-start;
-	align-items: stretch;
-}
-
 body > footer {
 	margin-top: 1em;
 	
@@ -55,14 +30,39 @@ body > footer {
 	align-items: stretch;
 }
 
-#parts {
+#baseParts {
+	display: flex;
+	flex-flow: row nowrap;
+	
+	align-items: stretch;
+}
+
+#baseParts > aside {
+	margin-right: 1em;
+	padding: 0 8px;
+	
+	border-right: 0.5em orange groove;
+	
+	flex-grow: 0;
+}
+
+#baseParts > aside .parts {
 	margin: 0;
 	padding: 0;
 	
 	list-style-type: none;
 }
 
-#baseParts {
+#baseParts > main {
+	flex-grow: 1;
+	
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+#baseParts > main > ul {
 	border: 1px solid orange;
 	
 	margin: 0;
@@ -77,28 +77,28 @@ body > footer {
 	align-items: stretch;
 }
 
-#baseParts .dndPlaceholder {
+#baseParts > main > ul .dndPlaceholder {
 	border: 2px solid yellow;
 	vertical-align: middle;
 }
 
-.basePart, .basePart .converters {
+#baseParts > main > ul .basePart, #baseParts > main > ul .basePart .converters {
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: stretch;
 }
 
-.basePart {
+#baseParts > main > ul .basePart {
 	border: 1px solid purple;
 }
 
-.basePart .converters .resourceFlow {
+#baseParts > main > ul .basePart .converters .resourceFlow {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: stretch;
 }
 
-.basePart .converters .resourceFlow > ul {
+#baseParts > main > ul .basePart .converters .resourceFlow > ul {
 	margin: 0;
 	padding: 0;
 	
@@ -110,11 +110,11 @@ body > footer {
 	justify-content: center;
 }
 
-.basePart .converters .resourceFlow > ul > li {
+#baseParts > main > ul .basePart .converters .resourceFlow > ul > li {
 	margin: 0.2em;
 }
 
-.basePart .converters .resourceFlow > span {
+#baseParts > main > ul .basePart .converters .resourceFlow > span {
 	padding: 0 0.5em;
 	
 	display: flex;
