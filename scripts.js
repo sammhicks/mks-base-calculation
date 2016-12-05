@@ -1,3 +1,5 @@
+"use strict";
+
 angular.module("mks-calculation", ["ngStorage"]).controller("mks-calculation-controller", function($scope, $http, $localStorage, $sessionStorage) {	
 	function versionOlder(a, b)
 	{
