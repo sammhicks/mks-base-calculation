@@ -1,0 +1,129 @@
+body {
+	margin: 0;
+	padding: 0;
+	
+	font-size: 100%;
+	
+	width: 100%;
+	
+	display: flex;
+	flex-flow: row wrap;
+	
+	justify-content: space-around;
+	align-items: stretch;
+}
+
+body > * {
+	width: 100%;
+}
+
+body > header, body > section> * > h2 {
+	text-align: center;
+}
+
+body > section {
+	display: flex;
+	flex-flow: row nowrap;
+	
+	align-items: stretch;
+}
+
+body > section > aside {
+	margin-right: 1em;
+	padding: 0 8px;
+	
+	border-right: 0.5em orange groove;
+	
+	flex-grow: 0;
+}
+
+body > section > main {
+	flex-grow: 1;
+	
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+body > footer {
+	margin-top: 1em;
+	
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-around;
+	align-items: stretch;
+}
+
+#parts {
+	margin: 0;
+	padding: 0;
+	
+	list-style-type: none;
+}
+
+#baseParts {
+	border: 1px solid orange;
+	
+	margin: 0;
+	padding: 0;
+	
+	min-height: 2em;
+	
+	list-style-type: none;
+	
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+}
+
+#baseParts .dndPlaceholder {
+	border: 2px solid yellow;
+	vertical-align: middle;
+}
+
+.basePart, .basePart .converters {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: stretch;
+}
+
+.basePart {
+	border: 1px solid purple;
+}
+
+.basePart .converters .resourceFlow {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: stretch;
+}
+
+.basePart .converters .resourceFlow > ul {
+	margin: 0;
+	padding: 0;
+	
+	list-style-type: none;
+	
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: stretch;
+	justify-content: center;
+}
+
+.basePart .converters .resourceFlow > ul > li {
+	margin: 0.2em;
+}
+
+.basePart .converters .resourceFlow > span {
+	padding: 0 0.5em;
+	
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: space-around;
+	
+	font-size: 3em;
+}
+
+ul[dnd-list], ul[dnd-list] > li {
+	position: relative;
+}

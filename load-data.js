@@ -47,7 +47,7 @@ function loadData(scope, http, localStorage) {
 		scope.parts = localStorage.parts.filter(valid_part).map((part) => new MKSPart(part));
 	}
 	
-	http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then(function(response) {
+	return http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then(function(response) {
 		var mksVersion = response.data.VERSION;
 		
 		scope.mksVersion = mksVersion;
