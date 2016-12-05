@@ -8,20 +8,24 @@ body {
 	align-items: stretch;
 }
 
-body>header, body>footer {
+body > header, body > footer {
 	width: 100%;
 }
 
-body>aside {
+body > aside {
 	border: 1px solid orange;
 	
 	flex-grow: 0;
 }
 
-body>main {
+body > main {
 	border: 1px solid purple;
 	
 	flex-grow: 1;
+	
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: stretch;
 }
 
 #parts {
@@ -29,4 +33,27 @@ body>main {
 	padding: 0;
 	
 	list-style-type: none;
+}
+
+ul[dnd-list], ul[dnd-list] > li {
+	position: relative;
+}
+
+ul.base-parts {
+	border: 1px solid orange;
+	
+	margin: 0;
+	padding: 0;
+	
+	flex-grow: 1;
+	
+	list-style-type: none;
+	
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: stretch;
+}
+
+ul.base-parts>li {
+	
 }
