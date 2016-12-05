@@ -83,60 +83,80 @@ class Habitation extends Converter {
 }
 
 class Bay {
-	constructor(module) {
+	constructor(module, isDefault) {
 		this.name = module.bayName;
 		this.typeName = module.typeName;
+		this.isDefault = isDefault;
 	}
 }
 
-function MKSPart(part) {
-	var self = this;
-	
-	this.name = part.name;
-	this.title = part.title;
-	
-	this.eTag = part.eTag;
-	this.eMultiplier = part.eMultiplier;
-	
-	function addConverter(name, converter) {
-		self.converters = self.converters || {};
-		self.converters[name] = converter;
+class MKSPart {
+	constructor(part) {
+		this.name = part.name;
+		this.title = part.title;
 		
-		if (self.selectedConverter === undefined) {
-			self.selectedConverter = converter;
-		}
-	}
-	
-	function addBay(name, bay) {
-		self.bays = self.bays || {};
-		self.bays[name] = bay;
-	}
-	
-	for (const module of part.MODULE) {
-		switch (module.name) {
-			case "ModuleResourceConverter_USI":
-				addConverter(module.ConverterName, new Converter(module));
-				break;
-			case "ModuleLifeSupportExtender":
-				addConverter(module.ConverterName, new LifeSupportExtender(module));
-				break;
-			case "ModuleLifeSupportRecycler":
-				addConverter(module.ConverterName, new LifeSupportRecycler(module));
-				break;
-			case "ModuleHabitation":
-				addConverter(module.ConverterName, new Habitation(module));
-				break;
-			case "ModuleSwappableConverter":
-				addBay(module.bayName, new Bay(module));
-		}
-	}
-	
-	if (part.RESOURCE !== undefined)
-	{
-		this.resources = {};
+		this.eTag = part.eTag;
+		this.eMultiplier = part.eMultiplier;
 		
-		for (const resource of part.RESOURCE) {
-			this.resources[resource.name] = new ResourceStore(resource);
+		var self = this;
+		
+		function addConverter(name, converter) {
+			self.converters = self.converters || {};
+			self.converters[name] = converter;
+			
+			if (self.selectedConverter === undefined) {
+				self.selectedConverter = converter;
+			}
+		}
+		
+		function addBay(name, bay) {
+			self.bays = self.bays || {};
+			self.bays[name] = bay;
+		}
+		
+		for (const module of part.MODULE) {
+			switch (module.name) {
+				case "ModuleResourceConverter_USI":
+					addConverter(module.ConverterName, new Converter(module));
+					break;
+				case "ModuleLifeSupportExtender":
+					addConverter(module.ConverterName, new LifeSupportExtender(module));
+					break;
+				case "ModuleLifeSupportRecycler":
+					addConverter(module.ConverterName, new LifeSupportRecycler(module));
+					break;
+				case "ModuleHabitation":
+					addConverter(module.ConverterName, new Habitation(module));
+					break;
+				case "ModuleSwappableConverter":
+					addBay(module.bayName, new Bay(module, false));
+			}
+		}
+		
+		
+		if (self.converters !== undefined) {
+			var firstConverter;
+			
+			for (const converterName in self.converters) {
+				firstConverter = converterName;
+			}
+			
+			if (this.bays === undefined) {
+				var bayName = "Bay";
+				
+				addBay(bayName, new Bay({name: bayName, typeName: ""}, true));
+				
+				self.bays[bayName].selectedConverter = self.converters[firstConverter];
+			}
+		}
+		
+		if (part.RESOURCE !== undefined)
+		{
+			this.resources = {};
+			
+			for (const resource of part.RESOURCE) {
+				this.resources[resource.name] = new ResourceStore(resource);
+			}
 		}
 	}
 }
