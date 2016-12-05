@@ -1,70 +1,92 @@
-function ResourceStore(resource) {
-	this.name = resource.name;
-	
-	this.amount = resource.amount;
-	this.maxAmount = resource.maxAmount;
+"use strict";
+
+class ResourceStore {
+	constructor(resource) {
+		this.name = resource.name;
+		
+		this.amount = resource.amount;
+		this.maxAmount = resource.maxAmount;
+	}
 }
 
-function IOResource(resource) {
-	this.name = resource.ResourceName;
-	this.ratio = resource.Ratio;
+class IOResource {
+	constructor(resource) {
+		this.name = resource.ResourceName;
+		this.ratio = resource.Ratio;
+	}
 }
 
-function InputResource(resource) {
-	IOResource.call(this, resource);
+class InputResource extends IOResource {
+	constructor(resource) {
+		super(resource);
+	}
 }
 
-function OutputResource(resource) {
-	IOResource.call(this, resource);
-	
-	this.dumpExcess = (resource.DumpExcess !== undefined) ? resource.DumpExcess : false;
+class OutputResource extends IOResource {
+	constructor(resource) {
+		super(resource);
+		
+		this.dumpExcess = (resource.DumpExcess !== undefined) ? resource.DumpExcess : false;
+	}
 }
 
-function RequiredResource(resource) {
-	IOResource.call(this, resource);
+class RequiredResource extends IOResource {
+	constructor(resource) {
+		super(resource);
+	}
 }
 
-function Converter(module) {
-	this.name = module.ConverterName;
-	
-	this.useSpecialistBonus = module.UseSpecialistBonus;
-	this.specialistBonusBase = module.SpecialistBonusBase;
-	this.specialistEfficiencyFactor = module.SpecialistEfficiencyFactor;
-	this.experienceEffect = module.ExperienceEffect;
-	
-	this.inputs = (module.INPUT_RESOURCE || []).map((resource) => new InputResource(resource));
-	this.outputs = (module.OUTPUT_RESOURCE || []).map((resource) => new OutputResource(resource));
-	this.required = (module.REQUIRED_RESOURCE || []).map((resource) => new RequiredResource(resource));
+class Converter {
+	constructor(module) {
+		this.name = module.ConverterName;
+		
+		this.useSpecialistBonus = module.UseSpecialistBonus;
+		this.specialistBonusBase = module.SpecialistBonusBase;
+		this.specialistEfficiencyFactor = module.SpecialistEfficiencyFactor;
+		this.experienceEffect = module.ExperienceEffect;
+		
+		this.inputs = (module.INPUT_RESOURCE || []).map((resource) => new InputResource(resource));
+		this.outputs = (module.OUTPUT_RESOURCE || []).map((resource) => new OutputResource(resource));
+		this.required = (module.REQUIRED_RESOURCE || []).map((resource) => new RequiredResource(resource));
+	}
 }
 
-function LifeSupportExtender(module) {
-	Converter.call(this, module);
-	
-	this.partOnly = module.PartOnly;
-	this.restrictedClass = module.restrictedClass;
-	this.timeMultiplier = module.TimeMultiplier;
+class LifeSupportExtender extends Converter {
+	constructor(module) {
+		super(module);
+		
+		this.partOnly = module.PartOnly;
+		this.restrictedClass = module.restrictedClass;
+		this.timeMultiplier = module.TimeMultiplier;
+	}
 }
 
-function LifeSupportRecycler(module) {
-	Converter.call(this, module);
-	
-	this.crewCapacity = module.CrewCapacity;
-	
-	this.recyclePercent = module.RecyclePercent;
+class LifeSupportRecycler extends Converter {
+	constructor(module) {
+		super(module);
+		
+		this.crewCapacity = module.CrewCapacity;
+		
+		this.recyclePercent = module.RecyclePercent;
+	}
 }
 
-function Habitation(module) {
-	Converter.call(this, module);
-	
-	this.baseKerbalMonths = module.BaseKerbalMonths;
-	this.crewCapacity = module.CrewCapacity;
-	this.baseHabMultiplier = module.BaseHabMultiplier;
-	this.inputResource = module.INPUT_RESOURCE;
+class Habitation extends Converter {
+	constructor (module) {
+		super(module);
+		
+		this.baseKerbalMonths = module.BaseKerbalMonths;
+		this.crewCapacity = module.CrewCapacity;
+		this.baseHabMultiplier = module.BaseHabMultiplier;
+		this.inputResource = module.INPUT_RESOURCE;
+	}
 }
 
-function Bay(module) {
-	this.name = module.bayName;
-	this.typeName = module.typeName;
+class Bay {
+	constructor(module) {
+		this.name = module.bayName;
+		this.typeName = module.typeName;
+	}
 }
 
 function MKSPart(part) {

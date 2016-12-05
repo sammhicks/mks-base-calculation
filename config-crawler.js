@@ -1,3 +1,5 @@
+"use strict";
+
 function configCrawler(httpHandler) {
 	var mksPath = "FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/";
 	

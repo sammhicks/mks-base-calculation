@@ -1,3 +1,5 @@
+"use strict";
+
 (function (configParser) {
 	var whitespace = Parsimmon.oneOf(" \t").many();
 	
