@@ -1,6 +1,6 @@
 "use strict";
 
-function loadData(scope, http, localStorage) {
+angular.module("mksCalculation").factory("loadData", ["$http", "$localStorage", function($http, $localStorage) {
 	function versionOlder(a, b)
 	{
 		switch (Math.sign(a.MAJOR - b.MAJOR)) {
@@ -42,18 +42,18 @@ function loadData(scope, http, localStorage) {
 		"ModuleResourceHarvester_USI"
 	]);
 	
-	return http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then(function(response) {
+	return (scope) => $http.get("https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version").then(function(response) {
 		var mksVersion = response.data.VERSION;
 		
 		scope.mksVersion = mksVersion;
 		
-		if (localStorage.mksVersion === undefined || localStorage.parts === undefined || versionOlder(localStorage.mksVersion, mksVersion))
+		if ($localStorage.mksVersion === undefined || $localStorage.parts === undefined || versionOlder($localStorage.mksVersion, mksVersion))
 		{
 			console.log("Importing part configs...");
 			
-			return new configCrawler(http).loadConfigs().then(function(parts) {
-				localStorage.mksVersion = mksVersion;
-				localStorage.parts = parts;
+			return new configCrawler($http).loadConfigs().then(function(parts) {
+				$localStorage.mksVersion = mksVersion;
+				$localStorage.parts = parts;
 				
 				console.log("Part configs loaded");
 			}, function(response) {
@@ -71,7 +71,7 @@ function loadData(scope, http, localStorage) {
 		
 		return Promise.reject(error);
 	}).then(function() {
-		scope.parts = localStorage.parts.filter(valid_part).map((part) => new MKSPart(part));
+		scope.parts = $localStorage.parts.filter(valid_part).map((part) => new MKSPart(part));
 		
 		var calculateUnion = (sets) => sets.reduce((a, b) => new Set([...a, ...b]), [])
 		
@@ -83,12 +83,12 @@ function loadData(scope, http, localStorage) {
 		
 		var partResources = (part) => calculateUnion((part.MODULE || []).map(moduleResources));
 		
-		scope.resources = Array.from(calculateUnion(localStorage.parts.map(partResources))).sort();
+		scope.resources = Array.from(calculateUnion($localStorage.parts.map(partResources))).sort();
 		
 		var moduleHarvestableResources = (module) => module.name === "ModuleResourceHarvester_USI" ? new Set([module.ResourceName]) : new Set();
 		
 		var partHarvestableResources = (part) => calculateUnion((part.MODULE || []).map(moduleHarvestableResources));
 		
-		scope.harvestableResources = Array.from(calculateUnion(localStorage.parts.map(partHarvestableResources))).sort();
+		scope.harvestableResources = Array.from(calculateUnion($localStorage.parts.map(partHarvestableResources))).sort();
 	});
-}
+}]);
