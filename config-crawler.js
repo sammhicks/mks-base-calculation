@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("mksCalculation").factory("configCrawler", ["$http", function($http) {
+angular.module("mksCalculation").factory("configCrawler", ["$http", "configParser", function($http, configParser) {
 	var mksPath = "FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/";
 	
 	var getContents = (path) => $http.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
@@ -18,7 +18,7 @@ angular.module("mksCalculation").factory("configCrawler", ["$http", function($ht
 	}
 	
 	var loadConfigFile = (fileInfo) => getFileData(fileInfo).then(function(response) {
-		var parse_result = configParser.config.parse(response);
+		var parse_result = configParser.parse(response);
 		
 		if (parse_result.status) {
 			return Promise.resolve([parse_result.value]);

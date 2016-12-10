@@ -1,6 +1,6 @@
 "use strict";
 
-(function (configParser) {
+angular.module("mksCalculation").factory("configParser", [function($http) {
 	var whitespace = Parsimmon.oneOf(" \t").many();
 	
 	var eol = Parsimmon.seq(
@@ -68,7 +68,7 @@
 		).map((results) => appendValue(results[1], results[6]))
 	);
 	
-	configParser.config = Parsimmon.seq(
+	return Parsimmon.seq(
 		Parsimmon.optWhitespace,
 		Parsimmon.string("PART"), eol,
 		Parsimmon.string("{"),    eol,
@@ -76,4 +76,4 @@
 		Parsimmon.string("}"),
 		Parsimmon.optWhitespace
 	).map((results) => results[5]).desc("Part");
-}(window.configParser = window.configParser || {}));
+}]);

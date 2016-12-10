@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("mksCalculation").factory("loadData", ["$http", "configCrawler", "$localStorage", function($http, configCrawler, $localStorage) {
+angular.module("mksCalculation").factory("loadData", ["$http", "configCrawler", "parts", "$localStorage", function($http, configCrawler, parts, $localStorage) {
 	function versionOlder(a, b)
 	{
 		switch (Math.sign(a.MAJOR - b.MAJOR)) {
@@ -71,7 +71,7 @@ angular.module("mksCalculation").factory("loadData", ["$http", "configCrawler", 
 		
 		return Promise.reject(error);
 	}).then(function() {
-		scope.parts = $localStorage.parts.filter(valid_part).map((part) => new MKSPart(part));
+		scope.parts = $localStorage.parts.filter(valid_part).map((part) => new parts.MKSPart(part));
 		
 		var calculateUnion = (sets) => sets.reduce((a, b) => new Set([...a, ...b]), [])
 		
