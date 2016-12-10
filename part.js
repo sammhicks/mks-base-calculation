@@ -1,162 +1,166 @@
 "use strict";
 
-class ResourceStore {
-	constructor(resource) {
-		this.name = resource.name;
-		
-		this.amount = resource.amount;
-		this.maxAmount = resource.maxAmount;
-	}
-}
-
-class IOResource {
-	constructor(resource) {
-		this.name = resource.ResourceName;
-		this.ratio = resource.Ratio;
-	}
-}
-
-class InputResource extends IOResource {
-	constructor(resource) {
-		super(resource);
-	}
-}
-
-class OutputResource extends IOResource {
-	constructor(resource) {
-		super(resource);
-		
-		this.dumpExcess = (resource.DumpExcess !== undefined) ? resource.DumpExcess : false;
-	}
-}
-
-class RequiredResource extends IOResource {
-	constructor(resource) {
-		super(resource);
-	}
-}
-
-class Converter {
-	constructor(module) {
-		this.name = module.ConverterName;
-		
-		this.useSpecialistBonus = module.UseSpecialistBonus;
-		this.specialistBonusBase = module.SpecialistBonusBase;
-		this.specialistEfficiencyFactor = module.SpecialistEfficiencyFactor;
-		this.experienceEffect = module.ExperienceEffect;
-		
-		this.inputs = (module.INPUT_RESOURCE || []).map((resource) => new InputResource(resource));
-		this.outputs = (module.OUTPUT_RESOURCE || []).map((resource) => new OutputResource(resource));
-		this.required = (module.REQUIRED_RESOURCE || []).map((resource) => new RequiredResource(resource));
-	}
-}
-
-class LifeSupportExtender extends Converter {
-	constructor(module) {
-		super(module);
-		
-		this.partOnly = module.PartOnly;
-		this.restrictedClass = module.restrictedClass;
-		this.timeMultiplier = module.TimeMultiplier;
-	}
-}
-
-class LifeSupportRecycler extends Converter {
-	constructor(module) {
-		super(module);
-		
-		this.crewCapacity = module.CrewCapacity;
-		
-		this.recyclePercent = module.RecyclePercent;
-	}
-}
-
-class Habitation extends Converter {
-	constructor (module) {
-		super(module);
-		
-		this.baseKerbalMonths = module.BaseKerbalMonths;
-		this.crewCapacity = module.CrewCapacity;
-		this.baseHabMultiplier = module.BaseHabMultiplier;
-		this.inputResource = module.INPUT_RESOURCE;
-	}
-}
-
-class Bay {
-	constructor(module, isDefault) {
-		this.name = module.bayName;
-		this.typeName = module.typeName;
-		this.isDefault = isDefault;
-	}
-}
-
-class MKSPart {
-	constructor(part) {
-		this.name = part.name;
-		this.title = part.title;
-		
-		this.eTag = part.eTag;
-		this.eMultiplier = part.eMultiplier;
-		
-		var self = this;
-		
-		function addConverter(name, converter) {
-			self.converters = self.converters || {};
-			self.converters[name] = converter;
+angular.module("mksCalculation").service("parts", [function() {
+	var parts = this;
+	this.ResourceStore = class {
+		constructor(resource) {
+			this.name = resource.name;
 			
-			if (self.selectedConverter === undefined) {
-				self.selectedConverter = converter;
-			}
+			this.amount = resource.amount;
+			this.maxAmount = resource.maxAmount;
 		}
-		
-		function addBay(name, bay) {
-			self.bays = self.bays || {};
-			self.bays[name] = bay;
+	}
+
+	this.IOResource = class {
+		constructor(resource) {
+			this.name = resource.ResourceName;
+			this.ratio = resource.Ratio;
 		}
-		
-		for (var module of part.MODULE) {
-			switch (module.name) {
-				case "ModuleResourceConverter_USI":
-					addConverter(module.ConverterName, new Converter(module));
-					break;
-				case "ModuleLifeSupportExtender":
-					addConverter(module.ConverterName, new LifeSupportExtender(module));
-					break;
-				case "ModuleLifeSupportRecycler":
-					addConverter(module.ConverterName, new LifeSupportRecycler(module));
-					break;
-				case "ModuleHabitation":
-					addConverter(module.ConverterName, new Habitation(module));
-					break;
-				case "ModuleSwappableConverter":
-					addBay(module.bayName, new Bay(module, false));
-			}
+	}
+
+	this.InputResource = class extends parts.IOResource {
+		constructor(resource) {
+			super(resource);
 		}
-		
-		
-		if (self.converters !== undefined) {
-			var firstConverter;
+	}
+
+	this.OutputResource = class extends parts.IOResource {
+		constructor(resource) {
+			super(resource);
 			
-			for (var converterName in self.converters) {
-				firstConverter = converterName;
-			}
+			this.dumpExcess = (resource.DumpExcess !== undefined) ? resource.DumpExcess : false;
+		}
+	}
+
+	this.RequiredResource = class extends parts.IOResource {
+		constructor(resource) {
+			super(resource);
+		}
+	}
+
+	this.Converter = class {
+		constructor(module) {
+			this.name = module.ConverterName;
 			
-			if (this.bays === undefined) {
-				var bayName = "Bay";
+			this.useSpecialistBonus = module.UseSpecialistBonus;
+			this.specialistBonusBase = module.SpecialistBonusBase;
+			this.specialistEfficiencyFactor = module.SpecialistEfficiencyFactor;
+			this.experienceEffect = module.ExperienceEffect;
+			
+			this.inputs = (module.INPUT_RESOURCE || []).map((resource) => new parts.InputResource(resource));
+			this.outputs = (module.OUTPUT_RESOURCE || []).map((resource) => new parts.OutputResource(resource));
+			this.required = (module.REQUIRED_RESOURCE || []).map((resource) => new parts.RequiredResource(resource));
+		}
+	}
+
+	this.LifeSupportExtender = class extends parts.Converter {
+		constructor(module) {
+			super(module);
+			
+			this.partOnly = module.PartOnly;
+			this.restrictedClass = module.restrictedClass;
+			this.timeMultiplier = module.TimeMultiplier;
+		}
+	}
+
+	this.LifeSupportRecycler = class extends parts.Converter {
+		constructor(module) {
+			super(module);
+			
+			this.crewCapacity = module.CrewCapacity;
+			
+			this.recyclePercent = module.RecyclePercent;
+		}
+	}
+
+	this.Habitation = class extends parts.Converter {
+		constructor (module) {
+			super(module);
+			
+			this.baseKerbalMonths = module.BaseKerbalMonths;
+			this.crewCapacity = module.CrewCapacity;
+			this.baseHabMultiplier = module.BaseHabMultiplier;
+			this.inputResource = module.INPUT_RESOURCE;
+		}
+	}
+
+	this.Bay = class {
+		constructor(module, isDefault) {
+			this.name = module.bayName;
+			this.typeName = module.typeName;
+			this.isDefault = isDefault;
+		}
+	}
+
+	this.MKSPart = class {
+		constructor(part) {
+			this.foo = (x) => x + 1;
+			this.name = part.name;
+			this.title = part.title;
+			
+			this.eTag = part.eTag;
+			this.eMultiplier = part.eMultiplier;
+			
+			var self = this;
+			
+			function addConverter(name, converter) {
+				self.converters = self.converters || {};
+				self.converters[name] = converter;
 				
-				addBay(bayName, new Bay({name: bayName, typeName: ""}, true));
-				
-				self.bays[bayName].selectedConverter = self.converters[firstConverter];
+				if (self.selectedConverter === undefined) {
+					self.selectedConverter = converter;
+				}
 			}
-		}
-		
-		if (part.RESOURCE !== undefined)
-		{
-			this.resources = {};
 			
-			for (var resource of part.RESOURCE) {
-				this.resources[resource.name] = new ResourceStore(resource);
+			function addBay(name, bay) {
+				self.bays = self.bays || {};
+				self.bays[name] = bay;
+			}
+			
+			for (var module of part.MODULE) {
+				switch (module.name) {
+					case "ModuleResourceConverter_USI":
+						addConverter(module.ConverterName, new parts.Converter(module));
+						break;
+					case "ModuleLifeSupportExtender":
+						addConverter(module.ConverterName, new parts.LifeSupportExtender(module));
+						break;
+					case "ModuleLifeSupportRecycler":
+						addConverter(module.ConverterName, new parts.LifeSupportRecycler(module));
+						break;
+					case "ModuleHabitation":
+						addConverter(module.ConverterName, new parts.Habitation(module));
+						break;
+					case "ModuleSwappableConverter":
+						addBay(module.bayName, new parts.Bay(module, false));
+				}
+			}
+			
+			
+			if (self.converters !== undefined) {
+				var firstConverter;
+				
+				for (var converterName in self.converters) {
+					firstConverter = converterName;
+				}
+				
+				if (this.bays === undefined) {
+					var bayName = "Bay";
+					
+					addBay(bayName, new parts.Bay({name: bayName, typeName: ""}, true));
+					
+					self.bays[bayName].selectedConverter = self.converters[firstConverter];
+				}
+			}
+			
+			if (part.RESOURCE !== undefined)
+			{
+				this.resources = {};
+				
+				for (var resource of part.RESOURCE) {
+					this.resources[resource.name] = new parts.ResourceStore(resource);
+				}
 			}
 		}
 	}
-}
+}]);
