@@ -114,7 +114,7 @@ class MKSPart {
 			self.bays[name] = bay;
 		}
 		
-		for (const module of part.MODULE) {
+		for (var module of part.MODULE) {
 			switch (module.name) {
 				case "ModuleResourceConverter_USI":
 					addConverter(module.ConverterName, new Converter(module));
@@ -137,7 +137,7 @@ class MKSPart {
 		if (self.converters !== undefined) {
 			var firstConverter;
 			
-			for (const converterName in self.converters) {
+			for (var converterName in self.converters) {
 				firstConverter = converterName;
 			}
 			
@@ -154,7 +154,7 @@ class MKSPart {
 		{
 			this.resources = {};
 			
-			for (const resource of part.RESOURCE) {
+			for (var resource of part.RESOURCE) {
 				this.resources[resource.name] = new ResourceStore(resource);
 			}
 		}
