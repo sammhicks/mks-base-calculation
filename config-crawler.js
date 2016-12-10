@@ -1,13 +1,13 @@
 "use strict";
 
-function configCrawler(httpHandler) {
+angular.module("mksCalculation").factory("configCrawler", ["$http", function($http) {
 	var mksPath = "FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/";
 	
-	var getContents = (path) => httpHandler.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
+	var getContents = (path) => $http.get("https://api.github.com/repos/bobpalmer/mks/contents/" + path);
 	
 	function getFileData(fileInfo) {
 		if (fileInfo.type === "file") {
-			return httpHandler.get(fileInfo.download_url).then((file_response) => file_response.data
+			return $http.get(fileInfo.download_url).then((file_response) => file_response.data
 			, function(e) {
 				console.log("Could not parse \"" + fileInfo.name + "\"");
 				return e;
@@ -49,5 +49,7 @@ function configCrawler(httpHandler) {
 		}
 	}
 	
-	this.loadConfigs = () => loadConfigDir({path: mksPath + "Parts"});
-}
+	return {
+		loadConfigs: () => loadConfigDir({path: mksPath + "Parts"})
+	};
+}]);

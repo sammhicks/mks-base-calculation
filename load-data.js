@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("mksCalculation").factory("loadData", ["$http", "$localStorage", function($http, $localStorage) {
+angular.module("mksCalculation").factory("loadData", ["$http", "configCrawler", "$localStorage", function($http, configCrawler, $localStorage) {
 	function versionOlder(a, b)
 	{
 		switch (Math.sign(a.MAJOR - b.MAJOR)) {
@@ -51,7 +51,7 @@ angular.module("mksCalculation").factory("loadData", ["$http", "$localStorage", 
 		{
 			console.log("Importing part configs...");
 			
-			return new configCrawler($http).loadConfigs().then(function(parts) {
+			return configCrawler.loadConfigs().then(function(parts) {
 				$localStorage.mksVersion = mksVersion;
 				$localStorage.parts = parts;
 				
