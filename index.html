@@ -19,49 +19,47 @@
 		<script src="load-data.js"></script>
 		<script src="index.js"></script>
 	</head>
-	<body ng-app="mksCalculation" ng-controller="mksCalculationController">
+	<body data-ng-app="mksCalculation" data-ng-controller="mksCalculationController">
 		<header>
 			<h1>MKS Base Calculation</h1>
 		</header>
-		<section id="baseParts">
+		<div id="baseParts">
 			<aside>
 				<h2>Parts</h2>
 				<ul class="parts">
-					<li ng-repeat="part in parts" dnd-draggable="part" dnd-effect-allowed="copy" dnd-type="partType">
-						{{part.title}}
-					</li>
+					<li data-ng-repeat="part in parts" data-ng-bind="part.title" data-dnd-draggable="part" data-dnd-effect-allowed="copy" data-dnd-type="partType"></li>
 				</ul>
 			</aside>
 			<main>
 				<h2>Base Parts</h2>
-				<ul dnd-list="baseParts" dnd-allowed-types="[partType]" dnd-horizontal-list="true">
+				<ul data-dnd-list="baseParts" data-dnd-allowed-types="[partType]" data-dnd-horizontal-list="true" data-dnd-drop="dropPart(item)">
 					<li class="dndPlaceholder">Drop part here</li>
-					<li class="basePart" ng-repeat="part in baseParts" dnd-draggable="part" dnd-effect-allowed="moveCopy" dnd-type="partType" dnd-moved="baseParts.splice($index, 1)">
-						<header>{{part.title}}</header>
-						<section class="converters">
+					<li class="basePart" data-ng-repeat="part in baseParts" data-dnd-draggable="part" data-dnd-effect-allowed="moveCopy" data-dnd-type="partType" data-dnd-moved="baseParts.splice($index, 1)">
+						<header data-ng-bind="part.title"></header>
+						<div class="converters">
 							<header>Converters</header>
-							<section ng-repeat="(bayName, bay) in part.bays">
-								<section ng-hide="bay.isDefault">
-									<header>{{bay.typeName}} {{bayName}}</header>
-									<select ng-options="converterName for (converterName, converter) in part.converters track by converter.name" ng-model="bay.selectedConverter"></select>
-								</section>
-								<section ng-show="bay.selectedConverter">
-									<section class="resourceFlow"">
+							<div data-ng-repeat="(bayName, bay) in part.bays">
+								<div data-ng-hide="bay.isDefault">
+									<header data-ng-bind="bay.typeName"></header>
+									<select data-ng-options="converter.name as converterName for (converterName, converter) in part.converters" data-ng-model="bay.selectedConverter"></select>
+								</div>
+								<div data-ng-show="bay.selectedConverter">
+									<div class="resourceFlow">
 										<ul>
-											<li ng-repeat="input in bay.selectedConverter.inputs">{{input.name}} ({{input.ratio}})</li>
+											<li data-ng-repeat="input in part.converters[bay.selectedConverter].inputs">{{input.name}} ({{input.ratio}})</li>
 										</ul>
 										<span><span>&#8611;</span></span>
 										<ul>
-											<li ng-repeat="output in bay.selectedConverter.outputs">{{output.name}} ({{output.ratio}})</li>
+											<li data-ng-repeat="output in part.converters[bay.selectedConverter].outputs">{{output.name}} ({{output.ratio}})</li>
 										</ul>
-									</section>
-								</section>
-							</section>
-						</section>
+									</div>
+								</div>
+							</div>
+						</div>
 					</li>
 				</ul>
 			</main>
-		</section>
+		</div>
 		<footer>
 			<a href="https://github.com/sammhicks/mks-base-calculation">Source on GitHub</a>
 		</footer>
