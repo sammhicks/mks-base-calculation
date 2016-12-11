@@ -17,7 +17,7 @@ body > * {
 	width: 100%;
 }
 
-body > header, body > section> * > h2 {
+body > header, body > div> * > h2 {
 	text-align: center;
 }
 
