@@ -34,7 +34,7 @@
 			</aside>
 			<main>
 				<h2>Base Parts</h2>
-				<ul dnd-list="baseParts" dnd-allowed-types="[partType]" dnd-horizontal-list="true">
+				<ul dnd-list="baseParts" dnd-allowed-types="[partType]" dnd-horizontal-list="true" dnd-drop="dropPart(item)">
 					<li class="dndPlaceholder">Drop part here</li>
 					<li class="basePart" ng-repeat="part in baseParts" dnd-draggable="part" dnd-effect-allowed="moveCopy" dnd-type="partType" dnd-moved="baseParts.splice($index, 1)">
 						<header>{{part.title}}</header>
@@ -43,16 +43,16 @@
 							<section ng-repeat="(bayName, bay) in part.bays">
 								<section ng-hide="bay.isDefault">
 									<header>{{bay.typeName}} {{bayName}}</header>
-									<select ng-options="converterName for (converterName, converter) in part.converters track by converter.name" ng-model="bay.selectedConverter"></select>
+									<select ng-options="converter.name as converterName for (converterName, converter) in part.converters" ng-model="bay.selectedConverter"></select>
 								</section>
 								<section ng-show="bay.selectedConverter">
 									<section class="resourceFlow"">
 										<ul>
-											<li ng-repeat="input in bay.selectedConverter.inputs">{{input.name}} ({{input.ratio}})</li>
+											<li ng-repeat="input in part.converters[bay.selectedConverter].inputs">{{input.name}} ({{input.ratio}})</li>
 										</ul>
 										<span><span>&#8611;</span></span>
 										<ul>
-											<li ng-repeat="output in bay.selectedConverter.outputs">{{output.name}} ({{output.ratio}})</li>
+											<li ng-repeat="output in part.converters[bay.selectedConverter].outputs">{{output.name}} ({{output.ratio}})</li>
 										</ul>
 									</section>
 								</section>
