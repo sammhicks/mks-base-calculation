@@ -43,7 +43,7 @@ body > footer {
 	
 	border-right: 0.5em orange groove;
 	
-	flex-grow: 0;
+	flex: 0 0 auto;
 }
 
 #baseParts > aside .parts {
